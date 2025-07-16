@@ -1,0 +1,84 @@
+#lang racket/base
+
+; Signature: append(l1,l2)
+; Type:[list(T)*list(S) –> list(S|T)].
+; Purpose: For returning a list which is the concatenation of the two lists we got as parameters.
+; Pre-conditions: true
+; Tests:  (append '(1 2) '(3 4)) ==> '(1 2 3 4)
+(define append
+    (lambda (l1 l2)
+      (if (eq?  l1 '() )
+        (if (eq? l2 '())
+            '()
+            (cons (car l2) (append l1 (cdr l2)))
+            )
+        (cons (car l1) (append (cdr l1) l2)
+        )
+)))
+
+
+; Signature: reverseHelper(l,acc)
+; Type:[list(T)*list(T) –> list(T)].
+; Purpose: To return a list which is the list we got as parameter(l) in reversed order of items in it.
+; Pre-conditions: called with acc='().
+; Tests: (reverseHelper '(1 2 3) '()) ==> '(3 2 1)
+(define reverseHelper
+  (lambda (l acc)
+    (if (eq?  l '())
+        acc
+        (reverseHelper (cdr l) (cons (car l) acc))
+     )
+        
+    )
+ )
+
+
+; Signature: reverse(l)
+; Type:[list(T) –> list(T)].
+; Purpose: To return a list which is the list we got as parameter(l) in reversed order of items in it.
+; Pre-conditions: true
+; Tests: (reverse '(1 2 3)) ==> '(3 2 1)
+(define reverse
+   (lambda (l)
+     (if (eq? l '())
+         '()
+         (reverseHelper  l '())
+      )
+))
+
+
+; Signature: dupHelper(lst,dup-count,currDup)
+; Type:[list(T)*list(Number)*list(Number) –> list(T)].
+; Purpose: To return a list where each item of lst is duplicated according to the number defined in
+; the same position in dup-count. In case dups-count is shorter than lst, dup-count should be
+; treated as a cyclic list.
+; Pre-conditions: dup-count contains non-negative numbers and is not empty. called with dup-count=currDup.
+; Tests: (dupHelper '(1 2 3) '(1 0) '(1 0)) ==> '(1 3).
+(define dupHelper
+  (lambda (lst dup-count currDup)
+    (if (eq? lst '())
+        '()
+        (if (eq? currDup '())
+            (dupHelper lst dup-count dup-count)
+            (if (eq? (car currDup) 0)
+                (dupHelper (cdr lst) dup-count (cdr currDup))
+                (cons (car lst) (dupHelper lst dup-count (cons(- (car currDup) 1) (cdr currDup))))
+             )
+         )
+     )
+   )
+ )
+
+
+; Signature: duplicate-items(lst,dup-count)
+; Type:[list(T)*list(Number) –> list(T)].
+; Purpose: To return a list where each item of lst is duplicated according to the number defined in
+; the same position in dup-count. In case dups-count is shorter than lst, dup-count should be
+; treated as a cyclic list.
+; Pre-conditions: dup-count contains non-negative numbers and is not empty.
+; Tests: (duplicate-items '(1 2 3) '(1 0)) ==> '(1 3)
+;        (duplicate-items '(1 2 3) '(2 1 0 10 2)) ==> '(1 1 2)
+(define duplicate-items
+    (lambda (lst dup-count)
+      (dupHelper lst dup-count dup-count)
+))
